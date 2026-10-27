@@ -1,0 +1,25 @@
+name: Build microservices
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - src/HackathonService/HackathonService.csproj
+          - src/ProjectService/ProjectService.csproj
+          - src/TaskService/TaskService.csproj
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore
+        run: dotnet restore "${{ matrix.project }}"
+      - name: Build
+        run: dotnet build "${{ matrix.project }}" --configuration Release --no-restore
